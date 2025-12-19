@@ -13,7 +13,10 @@ import {
 	TAbstractFile,        // 抽象文件类，代表文件系统中的任意文件或文件夹
 	TFile                 // 文件类，继承自 TAbstractFile，表示具体文件（如 Markdown 文件）
   } from 'obsidian';
-  
+
+// 导入样式配置
+import { STYLES } from './styles_temp.js';
+
 /*
  * 通用库函数
  */
@@ -371,6 +374,8 @@ class DocumentRenderer {
 		this.modal = new CopyingToHtmlModal(this.app);
 		this.modal.open();
 
+		console.log('origin markdown:');
+		// console.log(markdown);
 		try {
 			const topNode = await this.renderMarkdown(markdown, path);
 			return await this.transformHTML(topNode!);
@@ -396,12 +401,20 @@ class DocumentRenderer {
 		const wrapper = document.createElement('div');
 		wrapper.style.display = 'hidden';
 		document.body.appendChild(wrapper);
+		// 使用 Obsidian 的 MarkdownRenderer 渲染 Markdown 内容到 wrapper 元素中
 		await MarkdownRenderer.render(this.app, processedMarkdown, wrapper, path, this.view);
 		await this.untilRendered();
 
 		await this.loadComponents(this.view);
 
 		const result = wrapper.cloneNode(true) as HTMLElement;
+
+		// 简化代码块样式
+		this.simplifyCodeBlocks(result);
+		// console.log('Rendered HTML:');
+		// console.log(result.outerHTML);
+
+
 		document.body.removeChild(wrapper);
 
 		this.view.unload();
@@ -409,6 +422,47 @@ class DocumentRenderer {
 	}
 
 
+	/** 代码块简化 */
+	private simplifyCodeBlocks(node: HTMLElement) {
+		console.log('Simplifying code blocks2');
+		//  查询所有具有特定样式的 pre 标签，且包含 code 元素
+		const codeBlocks = node.querySelectorAll('pre:has(> code)');
+		// 遍历每个找到的代码块元素
+		codeBlocks.forEach(block => {
+			const codeElement = block.querySelector('code');
+			if (codeElement) {
+				const codeText = codeElement.textContent || codeElement.innerText;
+				const pre = document.createElement('pre');
+				const code = document.createElement('code');
+
+				pre.setAttribute('style',
+					'background: linear-gradient(to bottom, #2a2c33 0%, #383a42 8px, #383a42 100%);' +
+					'padding: 0;' +
+					'border-radius: 6px;' +
+					'overflow: hidden;' +
+					'margin: 24px 0;' +
+					'box-shadow: 0 2px 8px rgba(0,0,0,0.15);'
+				);
+
+				code.setAttribute('style',
+					'color: #abb2bf;' +
+					'font-family: "SF Mono", Consolas, Monaco, "Courier New", monospace;' +
+					'font-size: 14px;' +
+					'line-height: 1.7;' +
+					'display: block;' +
+					'white-space: pre;' +
+					'padding: 16px 20px;' +
+					'-webkit-font-smoothing: antialiased;' +
+					'-moz-osx-font-smoothing: grayscale;'
+				);
+
+				code.textContent = codeText;
+				pre.appendChild(code);
+				block.parentNode!.replaceChild(pre, block);
+			}
+		});
+		console.log('Simplifying code blocks end');
+	}
 
 	/**
 	 * 一些插件可能暴露依赖于 onload() 被调用的组件，但由于我们渲染 Markdown 的方式，这不会发生。
@@ -1426,9 +1480,15 @@ export default class CopyDocumentAsHTMLPlugin extends Plugin {
 			}
 
 			// 根据设置决定生成完整的 HTML 文档还是仅 HTML 片段
-			const htmlDocument = this.settings.bareHtmlOnly
+			const htmlDocument1 = this.settings.bareHtmlOnly
 				? htmlBody.outerHTML  // 仅 HTML 片段
 				: this.expandHtmlTemplate(htmlBody.outerHTML, title); // 完整的 HTML 文档
+
+			// 处理列表项格式
+			const htmlDocument2 = this.preprocessMarkdownList(htmlDocument1);
+
+			// 应用内联样式
+			const htmlDocument = this.applyInlineStyles(htmlDocument2);
 
 			// 创建剪贴板项，同时包含 HTML 和纯文本格式
 			const data =
@@ -1453,6 +1513,68 @@ export default class CopyDocumentAsHTMLPlugin extends Plugin {
 			copyIsRunning = false; // 无论成功失败，都标记复制操作结束
 		}
 	}
+
+	// 预处理 Markdown
+	// const processedContent = this.preprocessMarkdown(this.markdownInput);
+
+	// // 渲染
+	// let html = this.md.render(processedContent);
+
+	// // 处理 img:// 协议（从 IndexedDB 加载图片）
+	// html = await this.processImageProtocol(html);
+
+	// // 应用样式
+	// html = this.applyInlineStyles(html);
+
+	// this.renderedContent = html;
+	// },
+
+	private preprocessMarkdownList(content: string) {
+		// 规范化列表项格式
+		content = content.replace(/^(\s*(?:\d+\.|-|\*)\s+[^:\n]+)\n\s*:\s*(.+?)$/gm, '$1: $2');
+		content = content.replace(/^(\s*(?:\d+\.|-|\*)\s+.+?:)\s*\n\s+(.+?)$/gm, '$1 $2');
+		content = content.replace(/^(\s*(?:\d+\.|-|\*)\s+[^:\n]+)\n:\s*(.+?)$/gm, '$1: $2');
+		content = content.replace(/^(\s*(?:\d+\.|-|\*)\s+.+?)\n\n\s+(.+?)$/gm, '$1 $2');
+
+		return content;
+	}
+
+
+	// 应用内联样式 ++++++
+	private applyInlineStyles(html: string) {
+		const style = STYLES['wechat-default'].styles;
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+	
+		// // 先处理图片网格布局（在应用样式之前）
+		// this.groupConsecutiveImages(doc);
+	
+		Object.keys(style).forEach(selector => {
+			if (selector === 'pre' || selector === 'code' || selector === 'pre code') {
+			return;
+			}
+	
+			// 跳过已经在网格容器中的图片
+			const elements = doc.querySelectorAll(selector);
+			elements.forEach(el => {
+			// 如果是图片且在网格容器内，跳过样式应用
+			if (el.tagName === 'IMG' && el.closest('.image-grid')) {
+				return;
+			}
+	
+			const currentStyle = el.getAttribute('style') || '';
+			// 添加类型断言，确保 TypeScript 知道 selector 是 style 对象的有效键
+			el.setAttribute('style', currentStyle + '; ' + style[selector as keyof typeof style]);
+			});
+		});
+	
+		const container = doc.createElement('div');
+		container.setAttribute('style', style.container);
+		container.innerHTML = doc.body.innerHTML;
+	
+		return container.outerHTML;
+	}
+
 
 	/**
 	 * 扩展 HTML 模板，将占位符替换为实际内容
