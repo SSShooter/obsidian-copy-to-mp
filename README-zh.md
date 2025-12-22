@@ -47,6 +47,7 @@
 
 发现问题可在 Issue 中反馈。
 
+
 ## 开发
 
 参考：[Obsidian 示例插件](https://github.com/obsidianmd/obsidian-sample-plugin)
@@ -83,7 +84,11 @@ obsidian-copy-as-html/
 
 ## 赞赏码
 
-<img src="https://pic.520233.best/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251222142804_282_346.jpg" width="200" height="200" alt="赞赏码">
+<img src="https://pic.520233.best/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251222142804_282_346.jpg" width="100" height="100" alt="赞赏码">
+
+WX联系方式，请道明来意
+
+<img src="https://pub-2326c75947ef43449218077f86785a82.r2.dev/my-wechat.jpg" width="100"  alt="WX">
 
 ## 致谢
 
