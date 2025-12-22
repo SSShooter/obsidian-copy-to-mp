@@ -943,29 +943,6 @@ class CopyDocumentAsHTMLSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-
-		new Setting(containerEl)
-			.setName('渲染代码块为表格')
-			.setDesc('如果选中，代码块将渲染为表格。这会使粘贴到 Google 文档中稍微漂亮些 。')
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.formatCodeWithTables)
-				.onChange(async (value) => {
-					this.plugin.settings.formatCodeWithTables = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			// .setName('Render callouts with tables')
-			.setName('渲染调用为表格')
-			.setDesc('如果选中，调用将渲染为表格。这会使粘贴到 Google 文档中稍微漂亮些 。')
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.formatCalloutsWithTables)
-				.onChange(async (value) => {
-					this.plugin.settings.formatCalloutsWithTables = value;
-					await this.plugin.saveSettings();
-				}));
-
-
 		containerEl.createEl('h3', {text: '渲染选项'});
 
 		new Setting(containerEl)
@@ -977,16 +954,6 @@ class CopyDocumentAsHTMLSettingsTab extends PluginSettingTab {
 					this.plugin.settings.fileNameAsHeader = value;
 					await this.plugin.saveSettings();
 				}))
-
-		new Setting(containerEl)
-			.setName('复制为仅 HTML 片段')
-			.setDesc('如果选中，仅生成 HTML 片段，而不是完整的 HTML 文档。这会排除标题，并且有效地禁用所有样式。')
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.bareHtmlOnly)
-				.onChange(async (value) => {
-					this.plugin.settings.bareHtmlOnly = value;
-					await this.plugin.saveSettings();
-				}));
 
 		new Setting(containerEl)
 			.setName('移除属性/前置元数据部分')
@@ -1462,10 +1429,10 @@ export default class CopyDocumentAsHTMLPlugin extends Plugin {
 			// 写入剪贴板
 			await navigator.clipboard.write([data]);
 			console.log(`Copied to clipboard as HTML`);
-			new Notice(`Copied to clipboard as HTML`)
+			new Notice(`复制成功！`);
 		} catch (error) {
 			new Notice(`copy failed: ${error}`);
-			console.error('copy failed', error);
+			console.error('复制失败', error);
 		} finally {
 			copyIsRunning = false; // 无论成功失败，都标记复制操作结束
 		}

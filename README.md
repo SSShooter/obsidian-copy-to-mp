@@ -2,13 +2,14 @@
 
 这是一个 [Obsidian](https://obsidian.md) 插件，可将当前文档以微信公众号格式复制到剪贴板，方便直接在公众号后台粘贴，实现快速分享。
 
+## 使用演示
+
+
 ## 功能特性
 
 ### 命令
 
-可通过命令面板（Ctrl+P）运行，或绑定热键：
-
-* **复制选中内容或整个文档**：如果选中了文本，将复制选中部分；否则复制整个文档。
+可通过命令面板（Ctrl+P）运行，或绑定热键。**复制选中内容或整个文档**：如果选中了文本，将复制选中部分；否则复制整个文档。
 
 ### 媒体支持
 
@@ -43,9 +44,13 @@
 
 ## 安装
 
-在 Obsidian 设置 → 社区插件中搜索 `copy-to-mp` 并安装。
+支持在线安装：在 Obsidian 设置 → 社区插件中搜索 `copy-to-mp` 并安装。也可以本地安装。
+
+详情可参考我的教程：
+[Obsidian 进阶教程：插件安装](https://blog.520233.best/Obsidian-%E8%BF%9B%E9%98%B6%E6%95%99%E7%A8%8B%EF%BC%9A%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85)
 
 发现问题可在 Issue 中反馈。
+
 
 ## 开发
 
@@ -83,7 +88,11 @@ obsidian-copy-as-html/
 
 ## 赞赏码
 
-<img src="https://pic.520233.best/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251222142804_282_346.jpg" width="200" height="200" alt="赞赏码">
+<img src="https://pic.520233.best/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251222142804_282_346.jpg" width="100" height="100" alt="赞赏码">
+
+WX联系方式，请道明来意
+
+<img src="https://pub-2326c75947ef43449218077f86785a82.r2.dev/my-wechat.jpg" width="100"  alt="WX">
 
 ## 致谢
 
