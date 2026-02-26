@@ -1,6 +1,11 @@
 {
 	"name": "vscode-copy-to-mp",
-	"displayName": "Copy to MP",
+	"displayName": "Copy to WeChat MP",
+	"publisher": "ssshooter",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ssshooter/vscode-copy-to-mp"
+	},
 	"description": "Copy the current document to clipboard as HTML (optimized for WeChat MP), including images",
 	"version": "1.0.0",
 	"engines": {

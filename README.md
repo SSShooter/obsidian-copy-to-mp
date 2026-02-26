@@ -72,6 +72,9 @@ npm run compile
 
 # 开发模式（监听文件变化自动编译）
 npm run watch
+
+# 打包为 VSIX 扩展安装包
+npx @vscode/vsce package
 ```
 
 在 VSCode 中按 `F5` 即可启动扩展开发宿主进行调试。
