@@ -20,9 +20,19 @@
 		"commands": [
 			{
 				"command": "vscode-copy-to-mp.copyAsHtml",
-				"title": "Copy As HTML for MP"
+				"title": "Copy As HTML for MP",
+				"icon": "$(device-mobile)"
 			}
 		],
+		"menus": {
+			"editor/title": [
+				{
+					"command": "vscode-copy-to-mp.copyAsHtml",
+					"when": "resourceLangId == markdown",
+					"group": "navigation"
+				}
+			]
+		},
 		"configuration": {
 			"title": "Copy to MP Settings",
 			"properties": {
